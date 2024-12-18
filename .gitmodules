@@ -1,0 +1,6 @@
+[submodule "import-parser"]
+	path = import-parser
+	url = ../geonature-import-parser.git
+[submodule "shared"]
+	path = shared
+	url = ../sinp-shared-data.git

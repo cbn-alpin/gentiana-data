@@ -1,0 +1,8 @@
+.vscode/
+venv/
+var/
+logs/
+log/
+settings.ini
+*.log
+*.tmp.sql
