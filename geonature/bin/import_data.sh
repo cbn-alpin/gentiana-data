@@ -161,8 +161,8 @@ function downloadDataArchive() {
     printMsg "Downloading ${app_code^^} data archive..."
 
     if [[ ! -f "${raw_dir}/${gndi_filename_archive}" ]]; then
-        downloadSftp "${simethis_sftp_download_user}" "${simethis_sftp_download_pwd}" \
-            "${simethis_sftp_download_host}" "${simethis_sftp_download_port}" \
+        downloadSftp "${gndi_sftp_download_user}" "${gndi_sftp_download_pwd}" \
+            "${gndi_sftp_download_host}" "${gndi_sftp_download_port}" \
             "/${gndi_archive_path}/${gndi_filename_archive}" "${raw_dir}/${gndi_filename_archive}"
      else
         printVerbose "Archive file \"${gndi_filename_archive}\" already downloaded." ${Gra}
