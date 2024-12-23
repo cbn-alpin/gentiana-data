@@ -62,7 +62,6 @@ function main() {
     parseScriptOptions "${@}"
     loadScriptConfig "${setting_file_path-}"
     redirectOutput "${gndi_log_imports}"
-    checkSuperuser
 
     #+----------------------------------------------------------------------------------------------------------+
     # Start script
@@ -257,9 +256,8 @@ function executeCopy() {
     local psql_var="${data_type_abbr}ImportTable"
 
     printMsg "Copy ${type^^} in GeoNature database..."
-    checkSuperuser
-    sudo -n -u "${pg_admin_name}" -s \
-        psql -d "${db_name}" \
+    export PGPASSWORD="${db_super_pass}"; \
+        psql -h "${db_host}" -U "${db_super_user}" -d "${db_name}" \
             -v "${psql_var}=${table}" \
             -v gnDbOwner="${db_user}" \
             -v csvFilePath="${raw_dir}/${csv_to_import}" \
@@ -292,7 +290,6 @@ function displayStats() {
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -v importTable="${table}" \
             -f "${sql_shared_dir}/update/stats.sql"
-
 }
 
 function executeUpgradeScript() {
@@ -330,7 +327,6 @@ function executeUpgradeScript() {
 function reloadCorAreaSynthese() {
     printMsg "Reload cor_area_synthese table..."
 
-    checkSuperuser
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_shared_dir}/reload_cor_area_synthese.sql"
@@ -350,15 +346,6 @@ function finalizeUserImport() {
     export PGPASSWORD="${db_pass}"; \
         psql -h "${db_host}" -U "${db_user}" -d "${db_name}" \
             -f "${sql_file}"
-}
-
-function maintainDb() {
-    printMsg "Executing database maintenance on updated tables..."
-
-    checkSuperuser
-    sudo -n -u "${pg_admin_name}" -s \
-        psql -d "${db_name}" \
-            -f "${sql_shared_dir}/synthese_maintenance.sql"
 }
 
 main "${@}"
