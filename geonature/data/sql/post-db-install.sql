@@ -750,29 +750,29 @@ INSERT INTO gn_permissions.t_permissions (
 ON CONFLICT DO NOTHING ;
 
 
-\echo '-------------------------------------------------------------------------------'
-\echo 'Use this to insert a new permission if needed:'
+-- \echo '-------------------------------------------------------------------------------'
+-- \echo 'Use this to insert a new permission if needed:'
 
-SELECT
-	CONCAT(
-	    e'(\n',
-		e'\tutilisateurs.get_id_role_by_uuid(''', r.uuid_role,	'''), -- ', r.nom_role, e'\n',
-		e'\tgn_permissions.get_id_action_by_code(''', a.code_action, '''), -- ', a.description_action, e'\n',
-		e'\tgn_commons.get_id_module_bycode(''', m.module_code, '''),', e'\n',
-		e'\tgn_permissions.get_id_object(''', o.code_object, '''),', e'\n',
-		e'\t', COALESCE(p.scope_value::VARCHAR, 'NULL'), e'\n',
-		e'),\n'
-	)
-FROM gn_permissions.t_permissions AS p
-	JOIN gn_permissions.bib_actions AS a
-		ON p.id_action = a.id_action
-	JOIN gn_permissions.t_objects AS o
-		ON p.id_object = o.id_object
-	JOIN gn_commons.t_modules AS m
-		ON p.id_module = m.id_module
-	JOIN utilisateurs.t_roles AS r
-		ON p.id_role = r.id_role
-ORDER BY p.id_role, p.id_module, p.id_action ;
+-- SELECT
+--      CONCAT(
+--          e'(\n',
+--          e'\tutilisateurs.get_id_role_by_uuid(''', r.uuid_role,	'''), -- ', r.nom_role, e'\n',
+--          e'\tgn_permissions.get_id_action_by_code(''', a.code_action, '''), -- ', a.description_action, e'\n',
+--          e'\tgn_commons.get_id_module_bycode(''', m.module_code, '''),', e'\n',
+--          e'\tgn_permissions.get_id_object(''', o.code_object, '''),', e'\n',
+--          e'\t', COALESCE(p.scope_value::VARCHAR, 'NULL'), e'\n',
+--          e'),\n'
+--      )
+-- FROM gn_permissions.t_permissions AS p
+--      JOIN gn_permissions.bib_actions AS a
+--          ON p.id_action = a.id_action
+--      JOIN gn_permissions.t_objects AS o
+--          ON p.id_object = o.id_object
+--      JOIN gn_commons.t_modules AS m
+--          ON p.id_module = m.id_module
+--      JOIN utilisateurs.t_roles AS r
+--          ON p.id_role = r.id_role
+-- ORDER BY p.id_role, p.id_module, p.id_action ;
 
 
 \echo '----------------------------------------------------------------------------'
