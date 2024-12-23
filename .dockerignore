@@ -1,4 +1,18 @@
-.git/
-.venv/
-settings.ini
+# Docker files
+.dockerignore
 .env
+docker-build.sh
+Dockerfile
+
+# Git
+**/.git/
+**/.gitignore
+**/.gitmodules
+
+# App dev files
+**/.editorconfig
+**/.venv/
+**/settings.ini
+
+# App raw content
+**/data/raw/*.*
