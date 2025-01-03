@@ -36,6 +36,12 @@ WHERE (id_role = 4 AND identifiant = 'agent')
     OR (id_role = 7 AND identifiant = 'validateur');
 
 \echo '-------------------------------------------------------------------------------'
+\echo 'Suppression des organismes exemples inutiles'
+
+DELETE FROM utilisateurs.bib_organismes
+WHERE (id_organisme = 1 AND nom_organisme = 'ma structure test');
+
+\echo '-------------------------------------------------------------------------------'
 \echo 'Changement sur les utilisateurs'
 UPDATE utilisateurs.t_roles SET
     prenom_role = 'Administrateur',
