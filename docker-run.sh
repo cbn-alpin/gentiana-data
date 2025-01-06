@@ -58,7 +58,7 @@ function parseScriptOptions() {
         readonly image_name="cbna/gentiana-data"
     fi
     if [[ -z "${container_network:-}" ]]; then
-        readonly container_network="geonature-local_default"
+        readonly container_network="geonature-local-db-net"
     fi
     if [[ -z "${container_entrypoint:-}" ]]; then
         readonly container_entrypoint=""

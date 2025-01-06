@@ -15,7 +15,7 @@ Usage: ./$(basename $BASH_SOURCE)[options]
      -h | --help: display this help
      -v | --verbose: display more infos
      -u | --uid: user UID to use inside container. Default: 1000.
-     -g | --gid: user GID to use inside containe. Default: --uid value or 1000 if empty.
+     -g | --gid: user GID to use inside container. Default: --uid value or 1000 if empty.
 EOF
     exit 0
 }
