@@ -4,17 +4,17 @@ BEGIN;
 \echo 'Finalize integration of GN database'
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Ajout d''un index unique sur le champ t_roles.email'
+\echo 'Add unique index on t_roles.email field'
 ALTER TABLE utilisateurs.t_roles DROP CONSTRAINT IF EXISTS unique_email;
 ALTER TABLE utilisateurs.t_roles ADD CONSTRAINT unique_email UNIQUE (email);
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Ajout d''un index unique sur le champ t_roles.identifiant'
+\echo 'Add an unique index on the t_roles.identifier field'
 ALTER TABLE utilisateurs.t_roles DROP CONSTRAINT IF EXISTS unique_identifiant;
 ALTER TABLE utilisateurs.t_roles ADD CONSTRAINT unique_identifiant UNIQUE (identifiant);
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Changement de noms des groupes par défaut'
+\echo 'Changing the names of default groups'
 UPDATE utilisateurs.t_roles SET
     nom_role = 'Agents'
 WHERE id_role = 1 AND groupe = TRUE;
@@ -23,7 +23,7 @@ UPDATE utilisateurs.t_roles SET
 WHERE id_role = 2 AND groupe = TRUE;
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Suppression des utilisateurs exemples inutiles'
+\echo 'Removing unnecessary example users'
 DELETE FROM utilisateurs.cor_role_liste crl
 USING utilisateurs.t_roles tr
 WHERE (crl.id_role = 4 AND tr.identifiant = 'agent')
@@ -36,13 +36,13 @@ WHERE (id_role = 4 AND identifiant = 'agent')
     OR (id_role = 7 AND identifiant = 'validateur');
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Suppression des organismes exemples inutiles'
+\echo 'Removing unnecessary sample organisms'
 
 DELETE FROM utilisateurs.bib_organismes
 WHERE (id_organisme = 1 AND nom_organisme = 'ma structure test');
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Changement sur les utilisateurs'
+\echo 'Change on users'
 UPDATE utilisateurs.t_roles SET
     prenom_role = 'Administrateur',
     nom_role = 'GÉNÉRAL',
@@ -63,7 +63,7 @@ UPDATE utilisateurs.t_roles SET
 WHERE id_role = 5 AND identifiant = 'partenaire' ;
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Mise à jour de la séquence de la clé primaire de t_roles'
+\echo 'Update the primary key sequence of t_roles'
 SELECT SETVAL(
     pg_get_serial_sequence('utilisateurs.t_roles', 'id_role'),
     COALESCE(MAX(id_role) + 1, 1),
@@ -72,7 +72,7 @@ SELECT SETVAL(
 FROM utilisateurs.t_roles;
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Ajout des groupes complémentaires'
+\echo 'Adding additional groups'
 INSERT INTO utilisateurs.t_roles (
     nom_role,
     groupe,
@@ -110,7 +110,7 @@ INSERT INTO utilisateurs.t_roles (
 ON CONFLICT DO NOTHING ;
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Configuration du groupe Admin vis à vis de GeoNature'
+\echo 'Configuration of the Admin group for GeoNature'
 INSERT INTO utilisateurs.cor_profil_for_app (
     id_profil,
     id_application
@@ -121,7 +121,7 @@ INSERT INTO utilisateurs.cor_profil_for_app (
 ON CONFLICT DO NOTHING ;
 
 \echo '-------------------------------------------------------------------------------'
-\echo 'Association des groupes aux profils pour les applications (GeoNature, TaxHub et UsersHub)'
+\echo 'Association of groups to profiles for applications (GeoNature, TaxHub and UsersHub)'
 INSERT INTO utilisateurs.cor_role_app_profil (
     id_role,
     id_application,
@@ -780,6 +780,39 @@ ON CONFLICT DO NOTHING ;
 --          ON p.id_role = r.id_role
 -- ORDER BY p.id_role, p.id_module, p.id_action ;
 
+\echo '-------------------------------------------------------------------------------'
+\echo 'Add study perimeter as a type and its data for use with the Atlas'
+
+INSERT INTO ref_geo.bib_areas_types (
+    type_name,
+    type_code
+) VALUES (
+    'Périmètres d''étude',
+    'PE'
+)
+ON CONFLICT DO NOTHING ;
+
+INSERT INTO ref_geo.l_areas (
+    id_type,
+    area_name,
+    area_code,
+    geom,
+    geom_4326,
+    centroid,
+    "enable"
+)
+SELECT
+    ref_geo.get_id_area_type_by_code('PE'),
+    'Périmètre d''étude de Gentiana',
+    'PE-GENTIANA',
+    a.geom,
+    a.geom_4326,
+    a.centroid,
+    TRUE
+FROM ref_geo.l_areas AS a
+WHERE a.id_type = ref_geo.get_id_area_type_by_code('DEP')
+    AND a.area_code = '38'
+ON CONFLICT DO NOTHING ;
 
 \echo '----------------------------------------------------------------------------'
 \echo 'COMMIT if all is ok:'
